@@ -4,12 +4,20 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using TMPro;
 
 public class MoveToTarget : Agent
 {
 
     [SerializeField] private Transform target;
     [SerializeField] private SpriteRenderer backgroundSpriteRenderer;
+    [SerializeField] private TextMeshProUGUI scoreboardText;
+
+    private int count = 0;
+
+    private void Awake() {
+        scoreboardText.SetText(count.ToString());
+    }
 
     public override void OnEpisodeBegin()
     {
@@ -46,12 +54,16 @@ public class MoveToTarget : Agent
         if (collision.name == "Target")
         {
             AddReward(10f);
+            count++;
+            scoreboardText.SetText(count.ToString());
             backgroundSpriteRenderer.color = Color.green;
             EndEpisode();
         }
         else if (collision.name == "Walls")
         {
             AddReward(-2f);
+            count--;
+            scoreboardText.SetText(count.ToString());
             backgroundSpriteRenderer.color = Color.red;
             EndEpisode();
 
